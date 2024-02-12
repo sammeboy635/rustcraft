@@ -1,13 +1,37 @@
 use winit::event;
 use winit::window::Window;
+use wgpu::util::DeviceExt;
 
 #[repr(C)]
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
 struct Vertex {
     position: [f32; 3],
     color: [f32; 3],
 }
+// if not able to implement pod for vertex
+// unsafe impl bytemuck::Pod for Vertex {}
+// unsafe impl bytemuck::Zeroable for Vertex {}
 
+impl Vertex {
+    const ATTRIBS: [wgpu::VertexAttribute; 2] =
+        wgpu::vertex_attr_array![0 => Float32x3, 1 => Float32x3];
+
+    fn desc() -> wgpu::VertexBufferLayout<'static> {
+        use std::mem;
+
+        wgpu::VertexBufferLayout {
+            array_stride: mem::size_of::<Self>() as wgpu::BufferAddress,
+            step_mode: wgpu::VertexStepMode::Vertex,
+            attributes: &Self::ATTRIBS,
+        }
+    }
+}
+
+const VERTICES: &[Vertex] = &[
+    Vertex { position: [0.0, 0.5, 0.0], color: [1.0, 0.0, 0.0] },
+    Vertex { position: [-0.5, -0.5, 0.0], color: [0.0, 1.0, 0.0] },
+    Vertex { position: [0.5, -0.5, 0.0], color: [0.0, 0.0, 1.0] },
+];
 
 use winit::{
     event::*,
@@ -66,6 +90,9 @@ struct State {
     config: wgpu::SurfaceConfiguration,
     size: winit::dpi::PhysicalSize<u32>,
 	render_pipeline: wgpu::RenderPipeline,
+	vertex_buffer: wgpu::Buffer,
+	num_vertices: u32,
+
     // The window must be declared after the surface so
     // it gets dropped after it as the surface contains
     // unsafe references to the window's resources.
@@ -155,7 +182,7 @@ impl State {
 			vertex: wgpu::VertexState {
 				module: &shader,
 				entry_point: "vs_main", // 1.
-				buffers: &[], // 2.
+				buffers: &[Vertex::desc(),],
 			},
 			fragment: Some(wgpu::FragmentState { // 3.
 				module: &shader,
@@ -186,7 +213,19 @@ impl State {
 			},
 			multiview: None, // 5.
 		});
-		
+
+
+
+		let vertex_buffer = device.create_buffer_init(
+			&wgpu::util::BufferInitDescriptor {
+				label: Some("Vertex Buffer"),
+				contents: bytemuck::cast_slice(VERTICES),
+				usage: wgpu::BufferUsages::VERTEX,
+			}
+		);
+		let num_vertices = VERTICES.len() as u32;
+
+
 		Self {
             window,
             surface,
@@ -195,6 +234,8 @@ impl State {
             config,
             size,
 			render_pipeline,
+			vertex_buffer,
+			num_vertices,
         }
     }
 
@@ -224,7 +265,7 @@ impl State {
 		if input.state == ElementState::Pressed{
 			return match input.virtual_keycode {
 				Some(VirtualKeyCode::Escape) => {*control_flow = ControlFlow::Exit; true}
-				Some(VirtualKeyCode::Space) => {}
+				Some(VirtualKeyCode::Space) => {true}
 				_ => {println!("{:?}", input); false}
 			}
 		}
@@ -264,7 +305,8 @@ impl State {
 				timestamp_writes: None,
 			});
 			render_pass.set_pipeline(&self.render_pipeline); // 2.
-    		render_pass.draw(0..3, 0..1); // 3.
+    		render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
+			render_pass.draw(0..self.num_vertices, 0..1);
 		}
 	
 		// submit will accept anything that implements IntoIter
