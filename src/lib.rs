@@ -59,28 +59,45 @@ impl Vertex {
  //6
 //7
 const VERTICES: &[Vertex] = &[
-	Vertex { position: [1.0,  1.0, -1.0], tex_coords: [1.0, 0.0] },
     Vertex { position: [-1.0,  1.0, -1.0], tex_coords: [0.0, 0.0] },
-    Vertex { position: [-1.0, -1.0, -1.0], tex_coords: [0.0, 1.0] },
+    Vertex { position: [ 1.0,  1.0, -1.0], tex_coords: [1.0, 0.0] },
     Vertex { position: [ 1.0, -1.0, -1.0], tex_coords: [1.0, 1.0] },
-
+    Vertex { position: [-1.0, -1.0, -1.0], tex_coords: [0.0, 1.0] },
+    
+    Vertex { position: [ 1.0,  1.0,  1.0], tex_coords: [0.0, 0.0] },
+    Vertex { position: [-1.0,  1.0,  1.0], tex_coords: [1.0, 0.0] },
+    Vertex { position: [-1.0, -1.0,  1.0], tex_coords: [1.0, 1.0] },
+    Vertex { position: [ 1.0, -1.0,  1.0], tex_coords: [0.0, 1.0] },
+    
+    Vertex { position: [ 1.0,  1.0, -1.0], tex_coords: [0.0, 0.0] },
     Vertex { position: [ 1.0,  1.0,  1.0], tex_coords: [1.0, 0.0] },
-    Vertex { position: [-1.0,  1.0,  1.0], tex_coords: [0.0, 0.0] },
-    Vertex { position: [-1.0, -1.0,  1.0], tex_coords: [0.0, 1.0] },
     Vertex { position: [ 1.0, -1.0,  1.0], tex_coords: [1.0, 1.0] },
- 
+    Vertex { position: [ 1.0, -1.0, -1.0], tex_coords: [0.0, 1.0] },
+    
+    Vertex { position: [-1.0,  1.0,  1.0], tex_coords: [0.0, 0.0] },
+    Vertex { position: [-1.0,  1.0, -1.0], tex_coords: [1.0, 0.0] },
+    Vertex { position: [-1.0, -1.0, -1.0], tex_coords: [1.0, 1.0] },
+    Vertex { position: [-1.0, -1.0,  1.0], tex_coords: [0.0, 1.0] },
+    
+    Vertex { position: [-1.0,  1.0,  1.0], tex_coords: [0.0, 0.0] },
+    Vertex { position: [ 1.0,  1.0,  1.0], tex_coords: [1.0, 0.0] },
+    Vertex { position: [ 1.0,  1.0, -1.0], tex_coords: [1.0, 1.0] },
+    Vertex { position: [-1.0,  1.0, -1.0], tex_coords: [0.0, 1.0] },
+    
+    Vertex { position: [-1.0, -1.0, -1.0], tex_coords: [0.0, 0.0] },
+    Vertex { position: [ 1.0, -1.0, -1.0], tex_coords: [1.0, 0.0] },
+    Vertex { position: [ 1.0, -1.0,  1.0], tex_coords: [1.0, 1.0] },
+    Vertex { position: [-1.0, -1.0,  1.0], tex_coords: [0.0, 1.0] },
 ];
 
 const INDICES: &[u16] = &[
-	// Front face
-	0,2,1,  0,3,2,
-	4,3,0,  4,7,3,
-	4,1,5,  4,0,1,
-	3,6,2,  3,7,6,
-	1,6,5,  1,2,6,
-	7,5,6,  7,4,5,
+    0, 1, 2,  0, 2, 3,  // Front face
+    4, 5, 6,  4, 6, 7,  // Back face
+    8, 9, 10,  8, 10, 11,  // Right face
+    12, 13, 14,  12, 14, 15,  // Left face
+    16, 17, 18,  16, 18, 19,  // Top face
+    20, 21, 22,  20, 22, 23,  // Bottom face
 ];
-
 
 pub async fn run() {
     env_logger::init();
@@ -434,7 +451,7 @@ impl State {
 	pub fn input(&mut self, event: &WindowEvent, control_flow: &mut ControlFlow) -> bool {
 		self.camera_controller.process_events(event);
 		return match event {
-			WindowEvent::CursorMoved {position, ..} => {println!("{:?}", position); true}
+			WindowEvent::CursorMoved {position, ..} => {true}
 			WindowEvent::CloseRequested => {*control_flow = ControlFlow::Exit; true},
 			WindowEvent::KeyboardInput { input, .. } => {self.keyboard_input(input, control_flow)}
 			_ => false
