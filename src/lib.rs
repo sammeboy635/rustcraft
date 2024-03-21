@@ -17,6 +17,8 @@ mod uniformbuffer;
 mod blockrender;
 mod vertex;
 mod globals;
+mod cube;
+mod atlas;
 
 use crate::globals::*;
 use crate::vertex::*;
@@ -104,21 +106,11 @@ struct State {
     queue: wgpu::Queue,
     config: wgpu::SurfaceConfiguration,
     size: winit::dpi::PhysicalSize<u32>,
-	// render_pipeline: wgpu::RenderPipeline,
-	// vertex_buffer: wgpu::Buffer,
-	// num_vertices: u32,
-	// index_buffer: wgpu::Buffer, 
-    // num_indices: u32,
-	//textures
-	// diffuse_bind_group: wgpu::BindGroup, // A BindGroup describes a set of resources and how they can be accessed by a shader. 
-	// diffuse_texture: texture::Texture, 
+
+	//Renderer
 	blockrender: BlockRender,
 	//Camera
 	camera: camera3d::Camera,
-	// camera_wgpu: camera::CameraUniformInitializer,
-    // camera_buffer: wgpu::Buffer,
-    // camera_bind_group: wgpu::BindGroup,
-
 
 	//Timing
 	last_render_time: Instant,
@@ -196,7 +188,6 @@ impl State {
 	
 		// IMAGE END
 		// Camera
-		// let camera_controller = camera::CameraController::new(0.2);
 
 		let camera = camera3d::Camera::default();
 
@@ -218,20 +209,10 @@ impl State {
             queue,
             config,
             size,
-			// render_pipeline,
-			// vertex_buffer,
-			// num_vertices,
-			// index_buffer,
-			// num_indices,
-			// diffuse_bind_group,
-			// diffuse_texture,
+
 			blockrender,
-			// camera_controller,
 			camera,
-			// camera_wgpu,
-			// camera_buffer,
-			// camera_bind_group,
-			//Time
+
 			last_render_time: Instant::now(),
 			dt: Duration::default(),
         }
@@ -320,8 +301,12 @@ impl State {
 			render_pass.set_bind_group(0, &self.blockrender.diffuse_bind_group, &[]); 
 			render_pass.set_bind_group(1, &self.blockrender.camera_wgpu.bind_group, &[]);
 			render_pass.set_vertex_buffer(0, self.blockrender.vertex_buffer.slice(..));
+			// render_pass.draw(0..(self.blockrender.vertex_buffer.size() / 3) as u32, 0..1)
 			render_pass.set_index_buffer(self.blockrender.index_buffer.slice(..), wgpu::IndexFormat::Uint16); // 1.
-			render_pass.draw_indexed(0..INDICES.len() as u32, 0, 0..1); // 2.
+			render_pass.draw(0..36, 0..1);
+			// render_pass.draw_indexed(0..36 as u32, 0, 0..1); // 2.
+			// render_pass.draw_indexed(36..36*2 as u32, 36, 0..1); // 2.
+
 		}
 	
 		// submit will accept anything that implements IntoIter

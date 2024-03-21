@@ -2,8 +2,12 @@ use crate::camera::*;
 use crate::texture::*;
 use crate::vertex::*;
 use crate::globals::*;
+use crate::atlas::*;
 
 use wgpu::util::DeviceExt;
+
+
+
 pub struct BlockRender {
     pub render_pipeline: wgpu::RenderPipeline,
     pub vertex_buffer: wgpu::Buffer,
@@ -11,12 +15,18 @@ pub struct BlockRender {
     pub diffuse_bind_group: wgpu::BindGroup,
     pub diffuse_texture: Texture,
     pub camera_wgpu: CameraUniformInitializer,
+	pub vertices: Vertices,
 }
 
 impl BlockRender {
 	pub fn new(device: & wgpu::Device, queue: &wgpu::Queue, config: &wgpu::SurfaceConfiguration, camera_wgpu : CameraUniformInitializer) -> Self{
 		// TEXTURE START
 		
+		let mut vertices = Vertices::default();
+		vertices.append(0.0, 2.0, 0.0);
+		vertices.append(0.0, 0.0, 0.0);
+		
+
 		let diffuse_bytes = include_bytes!("texture.png"); 
 		let diffuse_texture = Texture::from_bytes(&device, &queue, diffuse_bytes, "texture.png").unwrap(); 
 
@@ -120,21 +130,28 @@ impl BlockRender {
 		let vertex_buffer = device.create_buffer_init(
 			&wgpu::util::BufferInitDescriptor {
 				label: Some("Vertex Buffer"),
-				contents: bytemuck::cast_slice(VERTICES),
-				usage: wgpu::BufferUsages::VERTEX,
+				contents: bytemuck::cast_slice(&vertices.verts),
+				usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
 			}
 		);
+		// let vertex_buffer = device.create_buffer_init(
+		// 	&wgpu::util::BufferInitDescriptor {
+		// 		label: Some("Vertex Buffer"),
+		// 		contents: bytemuck::cast_slice(),
+		// 		usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
+		// 	}
+		// );
 		// let num_vertices = VERTICES.len() as u32;
 
 		let index_buffer = device.create_buffer_init(
 			&wgpu::util::BufferInitDescriptor {
 				label: Some("Index Buffer"),
-				contents: bytemuck::cast_slice(INDICES),
-				usage: wgpu::BufferUsages::INDEX,
+				contents: bytemuck::cast_slice(&vertices.indics),
+				usage: wgpu::BufferUsages::INDEX | wgpu::BufferUsages::COPY_DST,
 			}
 		);
 		// let num_indices = INDICES.len() as u32;
-
+		
 		Self{
 			render_pipeline,
 			vertex_buffer,
@@ -142,6 +159,7 @@ impl BlockRender {
 			diffuse_bind_group,
 			diffuse_texture,
 			camera_wgpu,
+			vertices,
 		}
 	}
 }

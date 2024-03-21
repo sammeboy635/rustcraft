@@ -1,12 +1,11 @@
-use crate::globals::*;
-use crate::vertex::*;
-
+#[repr(C)]
+#[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
 struct Vec3 {
     x: i32,
     y: i32,
     z: i32,
 }
-
+#[derive(Debug)]
 struct BlockTexture {
     left: [[f32; 2]; 6],
     right: [[f32; 2]; 6],
@@ -14,6 +13,52 @@ struct BlockTexture {
     down: [[f32; 2]; 6],
     front: [[f32; 2]; 6],
     back: [[f32; 2]; 6],
+}
+
+fn generate_texture_coordinates(
+    atlas_size: (u32, u32),
+    inset: (f32, f32),
+    texture_id: u32,
+) -> [[f32; 2]; 6] {
+    let (atlas_width, atlas_height) = atlas_size;
+    let (inset_x, inset_y) = inset;
+
+    let tile_width = 1.0 / atlas_width as f32;
+    let tile_height = 1.0 / atlas_height as f32;
+
+    let (tile_x, tile_y) = (
+        (texture_id % atlas_width) as f32,
+        (texture_id / atlas_width) as f32,
+    );
+
+    let left = tile_x * tile_width + inset_x;
+    let right = (tile_x + 1.0) * tile_width - inset_x;
+    let top = tile_y * tile_height + inset_y;
+    let bottom = (tile_y + 1.0) * tile_height - inset_y;
+
+    [
+        [left, top],
+        [right, top],
+        [right, bottom],
+        [right, bottom],
+        [left, bottom],
+        [left, top],
+    ]
+}
+
+fn generate_block_texture(
+    atlas_size: (u32, u32),
+    inset: (f32, f32),
+    texture_ids: [u32; 6],
+) -> BlockTexture {
+    BlockTexture {
+        left: generate_texture_coordinates(atlas_size, inset, texture_ids[0]),
+        right: generate_texture_coordinates(atlas_size, inset, texture_ids[1]),
+        up: generate_texture_coordinates(atlas_size, inset, texture_ids[2]),
+        down: generate_texture_coordinates(atlas_size, inset, texture_ids[3]),
+        front: generate_texture_coordinates(atlas_size, inset, texture_ids[4]),
+        back: generate_texture_coordinates(atlas_size, inset, texture_ids[5]),
+    }
 }
 
 fn make_cube_data(mut vertices: Vec<f32>, show: [bool; 6], block: Vec3, tex: &BlockTexture) -> Vec<f32> {
@@ -103,29 +148,21 @@ fn make_cube_data(mut vertices: Vec<f32>, show: [bool; 6], block: Vec3, tex: &Bl
     vertices
 }
 
-
-
 #[cfg(test)]
 mod tests {
 	use super::*;
-
     #[test]
-    fn test_my_function() {
-        // let mut vertices = Vec::new();
-		// let mut indices = Vec::new();
+    fn test_atlas() {
+        let atlas_size = (16, 16);
+		let inset = (0.01, 0.01);
+		let texture_ids = [164, 165, 166, 167, 168, 169]; // Specify texture IDs for each face
 
-		// create_block_vertices(0b00010001, &mut vertices, &mut indices, [0.0, 0.0, 0.0]);
-		// create_block_vertices(0b00010001, &mut vertices, &mut indices, [1.0, 0.0, 0.0]);
-		// create_block_vertices(0b00010001, &mut vertices, &mut indices, [0.0, 1.0, 0.0]);
-		// println!("{:?}", vertices);
-		// println!("{:?}", indices);
-		
-		let mut verts = VERTICES;
-		let mut vertice = vec![Vertex{position:[0.0,0.0,0.0], tex_coords:[0.0,1.0], normals:[0.0,0.0,0.0]}];
-		
-		println!("{:?}", verts.len());
-		let mut terts = VERTICES;
-		println!("{:?}",[verts, terts].concat().len());
-		// verts(terts)
+		let block_texture = generate_block_texture(atlas_size, inset, texture_ids);
+		println!("{:?}",block_texture);
+		let show = [true, true, true, true, true, true];
+		let block = Vec3 { x: 0, y: 0, z: 0 };
+		let vertices = make_cube_data(Vec::new(), show, block, &block_texture);
+		println!("{:?}", vertices)
     }
 }
+// Example usage
