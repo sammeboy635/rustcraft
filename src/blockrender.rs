@@ -134,6 +134,15 @@ impl BlockRender {
 				usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
 			}
 		);
+
+		// let instance_buffer = device.create_buffer_init(
+		// 	&wgpu::util::BufferInitDescriptor {
+		// 		label: Some("Instance Buffer"),
+		// 		contents: bytemuck::cast_slice(&vertices.instance_data),
+		// 		usage: wgpu::BufferUsages::VERTEX,
+		// 	}
+		// );
+		
 		// let vertex_buffer = device.create_buffer_init(
 		// 	&wgpu::util::BufferInitDescriptor {
 		// 		label: Some("Vertex Buffer"),
