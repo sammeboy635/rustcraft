@@ -1,6 +1,13 @@
 use crate::vertex::*;
 pub const ATLAS_SIZE: &[f32] = &[16.0,16.0];
 
+const TOP: i32 = 0;
+const BOTTOM: i32 = 1;
+const RIGHT: i32 = 2;
+const LEFT: i32 = 3;
+const FRONT: i32 = 4;
+const BACK: i32 = 5;
+
 const INSET_VALUE: f32 = 0.03; // Adjust this value as needed
 
 macro_rules! atlas_coords {
@@ -32,35 +39,35 @@ pub const Z: &[f32] = &[0.0, 1.0];
 
 pub const VERTICES: &[Vertex] = &[
 	//front
-    Vertex { position: [X[0], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 0.0, 1.0] },
-    Vertex { position: [X[1], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, 0.0, 1.0] },
-    Vertex { position: [X[1], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 0.0, 1.0] },
-    Vertex { position: [X[0], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, 0.0, 1.0] },
+    Vertex { position: [X[0], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:FRONT },
+    Vertex { position: [X[1], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:FRONT },
+    Vertex { position: [X[1], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:FRONT },
+    Vertex { position: [X[0], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:FRONT },
     //back
-    Vertex { position: [X[1], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 0.0, -1.0] },
-    Vertex { position: [X[0], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, 0.0, -1.0] },
-    Vertex { position: [X[0], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 0.0, -1.0] },
-    Vertex { position: [X[1], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, 0.0, -1.0] },
+    Vertex { position: [X[1], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:BACK },
+    Vertex { position: [X[0], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:BACK },
+    Vertex { position: [X[0], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:BACK },
+    Vertex { position: [X[1], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:BACK },
     //right
-    Vertex { position: [X[1], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[1.0, 0.0, 0.0] },
-    Vertex { position: [X[1], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[1.0, 0.0, 0.0] },
-    Vertex { position: [X[1], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[1.0, 0.0, 0.0] },
-    Vertex { position: [X[1], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[1.0, 0.0, 0.0] },
+    Vertex { position: [X[1], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:RIGHT },
+    Vertex { position: [X[1], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:RIGHT },
+    Vertex { position: [X[1], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:RIGHT },
+    Vertex { position: [X[1], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:RIGHT },
     // left
-    Vertex { position: [X[0], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[-1.0, 0.0, 0.0] },
-    Vertex { position: [X[0], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[-1.0, 0.0, 0.0] },
-    Vertex { position: [X[0], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[-1.0, 0.0, 0.0] },
-    Vertex { position: [X[0], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[-1.0, 0.0, 0.0] },
+    Vertex { position: [X[0], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:LEFT },
+    Vertex { position: [X[0], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:LEFT },
+    Vertex { position: [X[0], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:LEFT },
+    Vertex { position: [X[0], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:LEFT },
     // top
-    Vertex { position: [X[0], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 1.0, 0.0] },
-    Vertex { position: [X[1], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, 1.0, 0.0] },
-    Vertex { position: [X[1], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 1.0, 0.0] },
-    Vertex { position: [X[0], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, 1.0, 0.0] },
+    Vertex { position: [X[0], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:TOP },
+    Vertex { position: [X[1], Y[1], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:TOP },
+    Vertex { position: [X[1], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:TOP },
+    Vertex { position: [X[0], Y[1], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:TOP },
     // Bottom
-    Vertex { position: [X[0], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, -1.0, 0.0] },
-    Vertex { position: [X[1], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, -1.0, 0.0] },
-    Vertex { position: [X[1], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, -1.0, 0.0] },
-    Vertex { position: [X[0], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, -1.0, 0.0] },
+    Vertex { position: [X[0], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:BOTTOM },
+    Vertex { position: [X[1], Y[0], Z[0]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:BOTTOM },
+    Vertex { position: [X[1], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:BOTTOM },
+    Vertex { position: [X[0], Y[0], Z[1]], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:BOTTOM },
 ];
 
 pub const INDICES: &[u16] = &[
@@ -74,7 +81,7 @@ pub const INDICES: &[u16] = &[
 
 #[repr(C)]
 #[derive(Copy, Clone, bytemuck::Pod, bytemuck::Zeroable, Debug)]
-struct InstanceRaw {
+pub struct InstanceRaw {
     model: [f32; 3],
 }
 
@@ -84,6 +91,8 @@ pub struct Vertices{
 	pub indics: Vec<u16>,
 	pub instance_data: Vec<InstanceRaw>,
 }
+
+
 
 impl Vertices{
 	pub fn new() -> Self{
@@ -95,57 +104,57 @@ impl Vertices{
 		let zz = z+1.0;
 		//front
 		let faces: &[Vertex] = &[
-		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 0.0, 1.0] },
-		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, 0.0, 1.0] },
-		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 0.0, 1.0] },
+		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:FRONT },
+		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:FRONT },
+		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:FRONT },
 		
-		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 0.0, 1.0] },
-		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 0.0, 1.0] },
-		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, 0.0, 1.0] },
+		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:FRONT },
+		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:FRONT },
+		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:FRONT },
 		//back
-		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 0.0, -1.0] },
-		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, 0.0, -1.0] },
-		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 0.0, -1.0] },
+		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:BACK },
+		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:BACK },
+		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:BACK },
 
-		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 0.0, -1.0] },
-		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 0.0, -1.0] },
-		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, 0.0, -1.0] },
+		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:BACK },
+		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:BACK },
+		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:BACK },
 		
 		//right
-		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[1.0, 0.0, 0.0] },
-		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[1.0, 0.0, 0.0] },
-		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[1.0, 0.0, 0.0] },
+		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:RIGHT },
+		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:RIGHT },
+		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:RIGHT },
 		
-		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[1.0, 0.0, 0.0] },
-		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[1.0, 0.0, 0.0] },
-		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[1.0, 0.0, 0.0] },
+		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:RIGHT },
+		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:RIGHT },
+		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:RIGHT },
 		
 		// left
-		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[-1.0, 0.0, 0.0] },
-		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[-1.0, 0.0, 0.0] },
-		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[-1.0, 0.0, 0.0] },
+		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:LEFT },
+		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:LEFT },
+		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:LEFT },
 		
-		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[-1.0, 0.0, 0.0] },
-		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[-1.0, 0.0, 0.0] },
-		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[-1.0, 0.0, 0.0] },
+		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:LEFT },
+		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:LEFT },
+		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:LEFT },
 		
 		// top
-		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 1.0, 0.0] },
-		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, 1.0, 0.0] },
-		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 1.0, 0.0] },
+		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:TOP },
+		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:TOP },
+		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:TOP },
 
-		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 1.0, 0.0] },
-		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 1.0, 0.0] },
-		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, 1.0, 0.0] },
+		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:TOP },
+		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:TOP },
+		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:TOP },
 		
 		// Bottom
-		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, -1.0, 0.0] },
-		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, -1.0, 0.0] },
-		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, -1.0, 0.0] },
+		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:BOTTOM },
+		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:BOTTOM },
+		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:BOTTOM },
 		
-		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, -1.0, 0.0] },
-		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, -1.0, 0.0] },
-		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, -1.0, 0.0] },
+		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:BOTTOM },
+		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:BOTTOM },
+		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:BOTTOM },
 		];
 		self.verts.extend(faces);
 		self.indics.extend(INDICES);
@@ -156,35 +165,35 @@ impl Vertices{
 		let zz = z+1.0;
 		//front
 		let faces: &[Vertex] = &[
-		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 0.0, 1.0] },
-		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, 0.0, 1.0] },
-		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 0.0, 1.0] },
-		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, 0.0, 1.0] },
+		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:FRONT },
+		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:FRONT },
+		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:FRONT },
+		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:FRONT },
 		//back
-		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 0.0, -1.0] },
-		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, 0.0, -1.0] },
-		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 0.0, -1.0] },
-		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, 0.0, -1.0] },
+		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:BACK },
+		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:BACK },
+		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:BACK },
+		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:BACK },
 		//right
-		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[1.0, 0.0, 0.0] },
-		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[1.0, 0.0, 0.0] },
-		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[1.0, 0.0, 0.0] },
-		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[1.0, 0.0, 0.0] },
+		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:RIGHT },
+		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:RIGHT },
+		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:RIGHT },
+		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:RIGHT },
 		// left
-		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[-1.0, 0.0, 0.0] },
-		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[-1.0, 0.0, 0.0] },
-		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[-1.0, 0.0, 0.0] },
-		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[-1.0, 0.0, 0.0] },
+		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:LEFT },
+		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:LEFT },
+		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:LEFT },
+		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:LEFT },
 		// top
-		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, 1.0, 0.0] },
-		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, 1.0, 0.0] },
-		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, 1.0, 0.0] },
-		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, 1.0, 0.0] },
+		Vertex { position: [x, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:TOP },
+		Vertex { position: [xx, yy, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:TOP },
+		Vertex { position: [xx, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:TOP },
+		Vertex { position: [x, yy, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:TOP },
 		// Bottom
-		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:[0.0, -1.0, 0.0] },
-		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:[0.0, -1.0, 0.0] },
-		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:[0.0, -1.0, 0.0] },
-		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:[0.0, -1.0, 0.0] },
+		Vertex { position: [x, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[0], normals:BOTTOM },
+		Vertex { position: [xx, y, z], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[1], normals:BOTTOM },
+		Vertex { position: [xx, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[2], normals:BOTTOM },
+		Vertex { position: [x, y, zz], tex_coords: atlas_coords!(ATLAS[0],ATLAS[1])[3], normals:BOTTOM },
 		];
 		self.verts.extend(faces);
 		self.indics.extend(INDICES);
