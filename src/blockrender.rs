@@ -25,12 +25,27 @@ impl BlockRender {
 		
 		let mut vertices = Vertices::default();
 		// vertices.append(0.0, 2.0, 0.0);
-		vertices.append(0.0, 0.0, 0.0);
-		for x in 0..100{
-			for y in 0..100{
-				vertices.append_instance(x as f32,y as f32,0.0);
-			}
-		}
+		vertices.append_top(0.0, 0.0, 0.0);
+		
+		// vertices.append_instance(0.0, 0.0, 0.0, FRONT);
+		vertices.append_instance(0.0, 0.0, 0.0, BOTTOM);
+		vertices.append_instance(0.0, 0.0, 0.0, TOP);
+		// vertices.append_instance(0.0, 0.0, 0.0, TOP);
+
+
+
+		// vertices.append_instance(0.0, 0.0, 0.0, FRONT);
+		// vertices.append_instance(0.0, 0.0, 0.0, 1);
+		// vertices.append_instance(0.0, 0.0, 0.0, 2);
+		// vertices.append_instance(0.0, 0.0, 0.0, 3);
+		// vertices.append_instance(0.0, 0.0, 0.0, 4);
+		// vertices.append_instance(0.0, 0.0, 0.0, 5);
+
+		// for x in 0..100{
+		// 	for y in 0..100{
+		// 		vertices.append_instance(x as f32,y as f32,0.0);
+		// 	}
+		// }
 
 		let diffuse_bytes = include_bytes!("texture.png"); 
 		let diffuse_texture = Texture::from_bytes(&device, &queue, diffuse_bytes, "texture.png").unwrap(); 
@@ -115,7 +130,7 @@ impl BlockRender {
 				topology: wgpu::PrimitiveTopology::TriangleList, // 1.
 				strip_index_format: None,
 				front_face: wgpu::FrontFace::Ccw, // 2.
-				cull_mode: Some(wgpu::Face::Back),
+				cull_mode: None,//Some(wgpu::Face::Back),
 				// Setting this to anything other than Fill requires Features::NON_FILL_POLYGON_MODE
 				polygon_mode: wgpu::PolygonMode::Fill,
 				// Requires Features::DEPTH_CLIP_CONTROL

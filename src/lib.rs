@@ -1,5 +1,4 @@
 use std::time::{Duration, Instant};
-
 use texture::Texture;
 use winit::event;
 use winit::window::Window;
@@ -290,9 +289,9 @@ impl State {
 			render_pass.set_vertex_buffer( 1, self.blockrender.instance_buffer.slice(..));
 			// render_pass.draw(0..(self.blockrender.vertex_buffer.size() / 3) as u32, 0..1)
 			render_pass.set_index_buffer(self.blockrender.index_buffer.slice(..), wgpu::IndexFormat::Uint16); // 1.
-			render_pass.draw(0..self.blockrender.vertices.verts.len() as u32, 0..(self.blockrender.vertices.instance_data.len()) as u32);
+			// render_pass.draw(0..self.blockrender.vertices.verts.len() as u32, 0..self.blockrender.vertices.instance_data.len() as u32);
 			// render_pass.draw_indexed(indices, base_vertex, instances)
-			// render_pass.draw_indexed(0..36 as u32, 0, 0..1); // 2.
+			render_pass.draw_indexed(0..self.blockrender.vertices.indics.len() as u32, 0, 0..self.blockrender.vertices.instance_data.len() as u32); // 2.
 			// render_pass.draw_indexed(36..36*2 as u32, 36, 0..1); // 2.
 
 		}

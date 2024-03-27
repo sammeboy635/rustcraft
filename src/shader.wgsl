@@ -12,6 +12,7 @@ struct VertexInput {
 
 struct InstanceInput {
     @location(5) position: vec3<f32>,
+    @location(6) face: i32,
 }
 
 struct VertexOutput {
@@ -61,17 +62,54 @@ fn calculateBitangent(normal: vec3<f32>, tangent: vec3<f32>) -> vec3<f32> {
     return bitangent;
 }
 
+
+
+
+fn generate_face_vertices(pos: vec3<f32>, face_id: i32, vertex_index: u32) -> vec4<f32> {
+    let x1: f32 = pos.x;
+    let x2: f32 = x1 + 1.0;
+    let y1: f32 = pos.y;
+    let y2: f32 = y1 + 1.0;
+    let z1: f32 = pos.z;
+    let z2: f32 = z1 + 1.0;
+    
+    var cubeIndices: array<array<u32, 4>, 6> = array<array<u32, 4>, 6>(
+        array<u32, 4>(5u, 4u, 1u, 0u), // TOP
+        array<u32, 4>(3u, 2u, 7u, 6u), // BOTTOM
+        array<u32, 4>(1u, 4u, 7u, 3u), // RIGHT
+        array<u32, 4>(5u, 0u, 3u, 6u), // LEFT
+        array<u32, 4>(0u, 1u, 2u, 3u), // FRONT
+        array<u32, 4>(4u, 5u, 6u, 7u)  // BACK
+    );
+    
+    var vertices: array<vec3<f32>, 8> = array<vec3<f32>, 8>(
+        vec3<f32>(x1, y2, z1),   // 0
+        vec3<f32>(x2, y2, z1),   // 1
+        vec3<f32>(x2, y1, z1),   // 2
+        vec3<f32>(x1, y1, z1),   // 3
+        vec3<f32>(x2, y2, z2),   // 4
+        vec3<f32>(x1, y2, z2),   // 5
+        vec3<f32>(x1, y1, z2),   // 6
+        vec3<f32>(x2, y1, z2)    // 7
+    );
+
+    return vec4<f32>(vertices[cubeIndices[face_id][vertex_index]], 1.0);
+}
+
 @vertex
 fn vs_main(model: VertexInput, instance: InstanceInput, 
     @builtin(vertex_index) index: u32,
     @builtin(instance_index) inst_index: u32
     ) -> VertexOutput {
+    // if (inst_index == 0u){
+    //     discard;
+    // }
     var normals: vec3<f32> = get_normals(model.normals);
     let lightdir = normalize(vec3<f32>(-1.0, 1.0, -1.0));
-    
+    let new_model: vec4<f32> = generate_face_vertices(instance.position, instance.face, index);
     var out: VertexOutput;
     out.tex_coords = model.tex_coords;
-    out.clip_position = camera.view_proj * vec4<f32>((model.position + vec3<f32>(instance.position.x, f32(inst_index),instance.position.z)), 1.0);
+    out.clip_position = camera.view_proj * new_model;
     out.normals = normals;
     return out;
 }

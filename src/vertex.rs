@@ -30,17 +30,19 @@ pub struct InstanceRaw {
     pub x: f32,
     pub y: f32,
     pub z: f32,
+    pub face: i32,
 }
 
 impl InstanceRaw {
-    const ATTRIBS: [wgpu::VertexAttribute; 1] =
-        wgpu::vertex_attr_array![5 => Float32x3];
+    const ATTRIBS: [wgpu::VertexAttribute; 2] =
+        wgpu::vertex_attr_array![5 => Float32x3, 6=>Sint32];
 
-    pub fn new(x:f32,y:f32,z:f32)-> Self{
+    pub fn new(x:f32,y:f32,z:f32, face:i32)-> Self{
         InstanceRaw{
             x,
             y,
-            z
+            z,
+            face,
         }
     }
     pub fn desc() -> wgpu::VertexBufferLayout<'static> {
