@@ -7,10 +7,6 @@ struct Vec3 {
     z: i32,
 }
 
-
-
-
-
 #[cfg(test)]
 mod tests {
 	use super::*;

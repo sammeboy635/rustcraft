@@ -23,3 +23,33 @@ impl Vertex {
         }
     }
 }
+
+#[repr(C)]
+#[derive(Copy, Clone, bytemuck::Pod, bytemuck::Zeroable, Debug)]
+pub struct InstanceRaw {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+
+impl InstanceRaw {
+    const ATTRIBS: [wgpu::VertexAttribute; 1] =
+        wgpu::vertex_attr_array![5 => Float32x3];
+
+    pub fn new(x:f32,y:f32,z:f32)-> Self{
+        InstanceRaw{
+            x,
+            y,
+            z
+        }
+    }
+    pub fn desc() -> wgpu::VertexBufferLayout<'static> {
+        use std::mem;
+
+        wgpu::VertexBufferLayout {
+            array_stride: mem::size_of::<Self>() as wgpu::BufferAddress,
+            step_mode: wgpu::VertexStepMode::Instance,
+            attributes: &Self::ATTRIBS,
+        }
+    }
+}

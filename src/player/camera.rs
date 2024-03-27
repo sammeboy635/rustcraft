@@ -1,6 +1,6 @@
 use cgmath::{Deg, InnerSpace, Matrix4, Point3, Vector3, Transform};
 use winit::dpi::PhysicalPosition;
-
+use crate::uniform::CameraUniform;
 use winit::{
     event::*,
     window::WindowBuilder,
@@ -17,6 +17,7 @@ pub struct Camera {
 	pub movement_direction: Vector3<f32>,
 	pub movement_speed: f32,
 	pub inverted_mouse: bool,
+    pub camera_uniform: CameraUniform,
 }
 
 impl Default for Camera {
@@ -28,10 +29,11 @@ impl Default for Camera {
             aspect: 1.0,
             fovy: 45.0,
             znear: 0.1,
-            zfar: 100.0,
+            zfar: 500.0,
             movement_direction: Vector3::new(0.0,0.0,0.0),
 			movement_speed: 5.0,
 			inverted_mouse: true,
+            camera_uniform: CameraUniform::new(),
         }
     }
 }
@@ -48,6 +50,7 @@ impl Camera {
 		movement_direction: Vector3<f32>,
 		movement_speed: f32,
 		inverted_mouse: bool,
+        camera_uniform: CameraUniform,
     ) -> Self {
         Camera {
             position,
@@ -60,6 +63,7 @@ impl Camera {
 			movement_direction,
 			movement_speed,
 			inverted_mouse,
+            camera_uniform,
         }
     }
 
@@ -67,6 +71,9 @@ impl Camera {
         let view = Matrix4::look_at_rh(self.position, self.target, self.up);
         let proj = cgmath::perspective(Deg(self.fovy), self.aspect, self.znear, self.zfar);
         proj * view
+    }
+    pub fn update_view_projection(&mut self){
+        self.camera_uniform.view_proj = self.build_view_projection_matrix().into();
     }
 
     pub fn update_aspect(&mut self, window: &winit::window::Window) {

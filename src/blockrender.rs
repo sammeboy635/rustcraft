@@ -1,5 +1,5 @@
-use crate::camera::*;
 use crate::texture::*;
+use crate::uniform::*;
 use crate::vertex::*;
 use crate::globals::*;
 use crate::atlas::*;
@@ -12,20 +12,25 @@ pub struct BlockRender {
     pub render_pipeline: wgpu::RenderPipeline,
     pub vertex_buffer: wgpu::Buffer,
     pub index_buffer: wgpu::Buffer,
+	pub instance_buffer: wgpu::Buffer,
     pub diffuse_bind_group: wgpu::BindGroup,
     pub diffuse_texture: Texture,
-    pub camera_wgpu: CameraUniformInitializer,
+    pub camera_wgpu: CameraUniformBuffer,
 	pub vertices: Vertices,
 }
 
 impl BlockRender {
-	pub fn new(device: & wgpu::Device, queue: &wgpu::Queue, config: &wgpu::SurfaceConfiguration, camera_wgpu : CameraUniformInitializer) -> Self{
+	pub fn new(device: & wgpu::Device, queue: &wgpu::Queue, config: &wgpu::SurfaceConfiguration, camera_wgpu : CameraUniformBuffer) -> Self{
 		// TEXTURE START
 		
 		let mut vertices = Vertices::default();
-		vertices.append(0.0, 2.0, 0.0);
+		// vertices.append(0.0, 2.0, 0.0);
 		vertices.append(0.0, 0.0, 0.0);
-		
+		for x in 0..100{
+			for y in 0..100{
+				vertices.append_instance(x as f32,y as f32,0.0);
+			}
+		}
 
 		let diffuse_bytes = include_bytes!("texture.png"); 
 		let diffuse_texture = Texture::from_bytes(&device, &queue, diffuse_bytes, "texture.png").unwrap(); 
@@ -95,7 +100,7 @@ impl BlockRender {
 			vertex: wgpu::VertexState {
 				module: &shader,
 				entry_point: "vs_main", // 1.
-				buffers: &[Vertex::desc(),],
+				buffers: &[Vertex::desc(),InstanceRaw::desc()],
 			},
 			fragment: Some(wgpu::FragmentState { // 3.
 				module: &shader,
@@ -141,22 +146,13 @@ impl BlockRender {
 			}
 		);
 
-		// let instance_buffer = device.create_buffer_init(
-		// 	&wgpu::util::BufferInitDescriptor {
-		// 		label: Some("Instance Buffer"),
-		// 		contents: bytemuck::cast_slice(&vertices.instance_data),
-		// 		usage: wgpu::BufferUsages::VERTEX,
-		// 	}
-		// );
-		
-		// let vertex_buffer = device.create_buffer_init(
-		// 	&wgpu::util::BufferInitDescriptor {
-		// 		label: Some("Vertex Buffer"),
-		// 		contents: bytemuck::cast_slice(),
-		// 		usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
-		// 	}
-		// );
-		// let num_vertices = VERTICES.len() as u32;
+		let instance_buffer = device.create_buffer_init(
+			&wgpu::util::BufferInitDescriptor {
+				label: Some("Instance Buffer"),
+				contents: bytemuck::cast_slice(&vertices.instance_data),
+				usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
+			}
+		);
 
 		let index_buffer = device.create_buffer_init(
 			&wgpu::util::BufferInitDescriptor {
@@ -171,10 +167,14 @@ impl BlockRender {
 			render_pipeline,
 			vertex_buffer,
 			index_buffer,
+			instance_buffer,
 			diffuse_bind_group,
 			diffuse_texture,
 			camera_wgpu,
 			vertices,
 		}
 	}
+	// pub fn render_pass(&Self) {
+
+	// }
 }

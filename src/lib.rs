@@ -11,22 +11,21 @@ use winit::{
     window::WindowBuilder,
 };
 
+mod player;
 mod texture;
-mod camera;
-mod camera3d;
-mod uniformbuffer;
 mod blockrender;
 mod vertex;
 mod globals;
 mod cube;
 mod atlas;
+mod uniform;
+mod world;
 
 use crate::globals::*;
 use crate::vertex::*;
-use crate::camera::{CameraUniform, CameraUniformInitializer};
 use crate::blockrender::*;
-
-
+use crate::player::*;
+use crate::uniform::*;
 pub async fn run() {
     env_logger::init();
     let event_loop = EventLoop::new();
@@ -87,7 +86,7 @@ struct State {
 	blockrender: BlockRender,
 	depth_texture: Texture,
 	//Camera
-	camera: camera3d::Camera,
+	camera: Camera,
 
 	//Timing
 	last_render_time: Instant,
@@ -166,11 +165,10 @@ impl State {
 		// IMAGE END
 		// Camera
 
-		let camera = camera3d::Camera::default();
+		let mut camera = Camera::default();
 
-		let mut camera_uniform = camera::CameraUniform::new();
-		camera_uniform.update_view_proj(&camera);
-		let camera_wgpu = CameraUniformInitializer::new(&device, camera_uniform);
+		camera.update_view_projection();
+		let camera_wgpu = CameraUniformBuffer::new(&device, camera.camera_uniform);
 
 		// Camera End
 		
@@ -289,9 +287,10 @@ impl State {
 			render_pass.set_bind_group(0, &self.blockrender.diffuse_bind_group, &[]); 
 			render_pass.set_bind_group(1, &self.blockrender.camera_wgpu.bind_group, &[]);
 			render_pass.set_vertex_buffer(0, self.blockrender.vertex_buffer.slice(..));
+			render_pass.set_vertex_buffer( 1, self.blockrender.instance_buffer.slice(..));
 			// render_pass.draw(0..(self.blockrender.vertex_buffer.size() / 3) as u32, 0..1)
 			render_pass.set_index_buffer(self.blockrender.index_buffer.slice(..), wgpu::IndexFormat::Uint16); // 1.
-			render_pass.draw(0..36*2, 0..1);
+			render_pass.draw(0..self.blockrender.vertices.verts.len() as u32, 0..(self.blockrender.vertices.instance_data.len()) as u32);
 			// render_pass.draw_indexed(indices, base_vertex, instances)
 			// render_pass.draw_indexed(0..36 as u32, 0, 0..1); // 2.
 			// render_pass.draw_indexed(36..36*2 as u32, 36, 0..1); // 2.

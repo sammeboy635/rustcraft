@@ -2,8 +2,8 @@ use wgpu::util::DeviceExt;
 use cgmath::*;
 
 
-use crate::camera3d::Camera;
-use crate::uniformbuffer::*;
+use crate::player::*;
+use crate::uniform::*;
 
 // We need this for Rust to store our data correctly for the shaders
 #[repr(C)]
@@ -27,21 +27,21 @@ impl CameraUniform {
     }
 }
 
-pub struct CameraUniformInitializer {
+pub struct CameraUniformBuffer {
     pub uniform: CameraUniform,
 	pub buffer: wgpu::Buffer,
     pub bind_group_layout: wgpu::BindGroupLayout,
     pub bind_group: wgpu::BindGroup,
 }
 
-impl UniformBuffer for CameraUniformInitializer {
+impl UniformBuffer for CameraUniformBuffer {
 	type Uniform = CameraUniform;
 	type Buffer = wgpu::Buffer;
     type BindGroupLayout = wgpu::BindGroupLayout;
     type BindGroup = wgpu::BindGroup;
 }
 
-impl CameraUniformInitializer {
+impl CameraUniformBuffer {
     pub fn new(device: &wgpu::Device, uniform: CameraUniform) -> Self {
 
 		let buffer = device.create_buffer_init(
